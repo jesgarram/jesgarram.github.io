@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+
+const projects = [
+  {
+    name: 'Arete',
+    role: 'Creator',
+    url: 'https://github.com/jesgarram/arete',
+    image: '/images/arete-phases.svg',
+    description: 'A brainstorming agent that challenges your thinking through five structured phases — Ground, Explore, Decide, Stress, Ship — before you commit to decisions. The annoying senior engineer, as a plugin.',
+  },
+];
+---
+
+<Base title="Projects — Jesus Garcia" description="Open-source projects by Jesus Garcia.">
+  <div class="page-header">
+    <h1 class="page-title">Projects</h1>
+    <p class="page-subtitle">Open-source things I've built or contributed to</p>
+  </div>
+
+  <div class="projects-grid">
+    {projects.map((project) => (
+      <a href={project.url} class="project-card" target="_blank" rel="noopener">
+        <div class="project-card-body">
+          <div class="project-card-header">
+            <h3 class="project-card-name">{project.name}</h3>
+            <span class="project-card-role">{project.role}</span>
+          </div>
+          <p class="project-card-description">{project.description}</p>
+        </div>
+        {project.image && (
+          <img src={project.image} alt={project.name} class="project-card-image" />
+        )}
+      </a>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 80px;
+    animation: fadeUp 0.5s ease-out 0.2s both;
+  }
+
+  .project-card {
+    display: flex;
+    text-decoration: none;
+    border: 1px solid var(--color-rule);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .project-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .project-card-body {
+    flex: 1;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .project-card-image {
+    width: 320px;
+    height: auto;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .project-card-header {
+    margin-bottom: 12px;
+  }
+
+  .project-card-name {
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 4px;
+    transition: color 0.2s ease;
+  }
+
+  .project-card:hover .project-card-name {
+    color: var(--color-accent);
+  }
+
+  .project-card-role {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+  }
+
+  .project-card-description {
+    font-family: var(--font-serif);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .project-card {
+      flex-direction: column-reverse;
+    }
+
+    .project-card-image {
+      width: 100%;
+    }
+  }
+</style>

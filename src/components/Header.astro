@@ -1,0 +1,12 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <a href="/" class="site-logo">Jesus Garcia</a>
+  <nav class="site-nav">
+    <a href="/" class:list={[{ active: currentPath === '/' || currentPath === '' }]}>Writing</a>
+    <a href="/projects" class:list={[{ active: currentPath === '/projects' || currentPath === '/projects/' }]}>Projects</a>
+    <a href="/about" class:list={[{ active: currentPath === '/about' || currentPath === '/about/' }]}>About</a>
+  </nav>
+</header>

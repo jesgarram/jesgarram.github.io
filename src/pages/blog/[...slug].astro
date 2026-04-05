@@ -1,0 +1,148 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+  return posts.map((post, i) => ({
+    params: { slug: post.id.replace(/\/index\.md$/, '').replace(/\.md$/, '') },
+    props: {
+      post,
+      prevPost: posts[i + 1] ?? null,
+      nextPost: posts[i - 1] ?? null,
+    },
+  }));
+}
+
+function slug(id: string) {
+  return id.replace(/\/index\.md$/, '').replace(/\.md$/, '');
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { Content, headings } = await render(post);
+
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const words = post.body ? post.body.split(/\s+/).length : 0;
+const readingTime = Math.max(1, Math.round(words / 230));
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+const morePosts = [prevPost, nextPost].filter(Boolean);
+---
+
+<Base
+  title={`${post.data.title} — Jesus Garcia`}
+  description={post.data.description}
+  ogImage={post.data.image?.src}
+>
+  <article class="article-page">
+
+    {/* Header cascade: meta → title → subtitle → tags → accent → hero */}
+    <header class="article-header">
+      <div class="article-meta">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formatDate(post.data.pubDate)}
+        </time>
+        <span class="article-meta-sep" aria-hidden="true">&middot;</span>
+        <span class="article-reading-time">{readingTime} min read</span>
+        {post.data.talkUrl && (
+          <>
+            <span class="article-meta-sep" aria-hidden="true">&middot;</span>
+            <a href={post.data.talkUrl} target="_blank" rel="noopener" class="article-talk-link">
+              Watch the talk &nearr;
+            </a>
+          </>
+        )}
+      </div>
+
+      <h1 class="article-title">{post.data.title}</h1>
+
+      {post.data.description && (
+        <p class="article-subtitle">{post.data.description}</p>
+      )}
+
+      {post.data.tags?.length > 0 && (
+        <div class="article-tags">
+          {post.data.tags.map((tag: string) => (
+            <span class="article-tag">{tag}</span>
+          ))}
+        </div>
+      )}
+
+      <div class="article-header-accent" aria-hidden="true"></div>
+    </header>
+
+    {/* Hero image — breaks out wider than content */}
+    {post.data.image && (
+      <figure class="article-hero">
+        <img src={post.data.image.src} alt="" loading="eager" />
+      </figure>
+    )}
+
+    {/* Article body with optional TOC sidebar */}
+    <div class="article-layout">
+      {tocHeadings.length > 0 && (
+        <aside class="article-toc">
+          <nav aria-label="Table of contents">
+            <span class="article-toc-label">Contents</span>
+            <ul>
+              {tocHeadings.map((heading) => (
+                <li class={heading.depth === 3 ? 'toc-h3' : ''}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      )}
+
+      <div class="article-content prose">
+        <Content />
+        <hr class="article-closing-rule" />
+        <p class="article-closing">
+          Thanks for reading! If you have any questions or feedback, find me on
+          <a href="https://github.com/jesgarram" target="_blank" rel="noopener">GitHub</a> or
+          <a href="https://linkedin.com/in/jesusgarciaramirez" target="_blank" rel="noopener">LinkedIn</a>.
+        </p>
+      </div>
+    </div>
+
+    {/* More Posts — card-based navigation */}
+    {morePosts.length > 0 && (
+      <nav class="more-posts" aria-label="More posts">
+        <div class="more-posts-divider">
+          <span class="more-posts-divider-line"></span>
+          <span class="more-posts-divider-label">More Posts</span>
+          <span class="more-posts-divider-line"></span>
+        </div>
+        <div class={`more-posts-grid more-posts-grid--${morePosts.length === 1 ? 'single' : 'pair'}`}>
+          {morePosts.map((p) => (
+            <a href={`/blog/${slug(p.id)}/`} class="more-posts-card">
+              <div class="more-posts-card-image">
+                {p.data.image ? (
+                  <img src={p.data.image.src} alt="" loading="lazy" />
+                ) : (
+                  <div class="more-posts-card-placeholder" />
+                )}
+              </div>
+              <div class="more-posts-card-body">
+                <h3 class="more-posts-card-title">{p.data.title}</h3>
+                <p class="more-posts-card-date">{formatDate(p.data.pubDate)}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </nav>
+    )}
+
+  </article>
+
+</Base>
