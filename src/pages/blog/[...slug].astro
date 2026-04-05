@@ -1,13 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import { slug, formatDate, readingTime } from '../../lib/utils';
 
 export async function getStaticPaths() {
+  const toSlug = (id: string) => id.replace(/\/index\.md$/, '').replace(/\.md$/, '');
   const posts = (await getCollection('blog')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
   return posts.map((post, i) => ({
-    params: { slug: post.id.replace(/\/index\.md$/, '').replace(/\.md$/, '') },
+    params: { slug: toSlug(post.id) },
     props: {
       post,
       prevPost: posts[i + 1] ?? null,
@@ -16,24 +18,11 @@ export async function getStaticPaths() {
   }));
 }
 
-function slug(id: string) {
-  return id.replace(/\/index\.md$/, '').replace(/\.md$/, '');
-}
-
 const { post, prevPost, nextPost } = Astro.props;
 const { Content, headings } = await render(post);
 
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
-const words = post.body ? post.body.split(/\s+/).length : 0;
-const readingTime = Math.max(1, Math.round(words / 230));
-
-function formatDate(date: Date) {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
+const minutes = readingTime(post.body);
 
 const morePosts = [prevPost, nextPost].filter(Boolean);
 ---
@@ -45,14 +34,13 @@ const morePosts = [prevPost, nextPost].filter(Boolean);
 >
   <article class="article-page">
 
-    {/* Header cascade: meta → title → subtitle → tags → accent → hero */}
     <header class="article-header">
       <div class="article-meta">
         <time datetime={post.data.pubDate.toISOString()}>
           {formatDate(post.data.pubDate)}
         </time>
         <span class="article-meta-sep" aria-hidden="true">&middot;</span>
-        <span class="article-reading-time">{readingTime} min read</span>
+        <span class="article-reading-time">{minutes} min read</span>
         {post.data.talkUrl && (
           <>
             <span class="article-meta-sep" aria-hidden="true">&middot;</span>
@@ -80,14 +68,12 @@ const morePosts = [prevPost, nextPost].filter(Boolean);
       <div class="article-header-accent" aria-hidden="true"></div>
     </header>
 
-    {/* Hero image — breaks out wider than content */}
     {post.data.image && (
       <figure class="article-hero">
         <img src={post.data.image.src} alt="" loading="eager" />
       </figure>
     )}
 
-    {/* Article body with optional TOC sidebar */}
     <div class="article-layout">
       {tocHeadings.length > 0 && (
         <aside class="article-toc">
@@ -115,7 +101,6 @@ const morePosts = [prevPost, nextPost].filter(Boolean);
       </div>
     </div>
 
-    {/* More Posts — card-based navigation */}
     {morePosts.length > 0 && (
       <nav class="more-posts" aria-label="More posts">
         <div class="more-posts-divider">
