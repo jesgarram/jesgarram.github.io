@@ -25,21 +25,30 @@ You start a conversation, say "I want to brainstorm about this problem," and it 
 
 **Stress.** This is the annoying senior engineer phase. You've made your decision? Fine. Now defend it.
 
-"The skill reads reference docs and ADRs. That's a lot of context. Are you willing to accept slower responses?" Yes, I care about completeness, not speed. "What happens when the question is too vague?" Claude is quite smart, it should be able to figure it out. "Someone uses this on a three-file hobby project. Should it still generate everything?" No. If you wrote three files, you don't need a skill to explain your own code.
-
-To be fair, it's not a real senior engineer. It asks the hard questions, but it never tells you your idea is bad. You can give a weak answer and it'll move on. A real senior engineer would say "that's not good enough, think again." So you have to be honest with yourself about whether you're actually defending your decisions or just getting through the phase.
-
-But it does catch real things. I was going to use C4 diagram syntax for Mermaid. The stress phase pushed on rendering compatibility. Standard Mermaid renders everywhere. C4 doesn't always look right in GitHub. If I hadn't thought about this, I would have built it, seen it break, and had to go back. The stress phase caught it before I wrote a single line.
+It does catch real things. I was going to use C4 diagram syntax for Mermaid. The stress phase pushed on rendering compatibility. Standard Mermaid renders everywhere. C4 doesn't always look right in GitHub. If I hadn't thought about this, I would have built it, seen it break, and had to go back. The stress phase caught it before I wrote a single line.
 
 **Ship.** You don't have to do anything here. The agent recapitulates what you've done and writes two things: an ADR with the decisions, context, and trade-offs, and a plan you can hand to a human or an agent to implement.
 
 The ADR includes what was considered and cut, and why. There's also something I really like: positive consequences, negative consequences, and mitigations. There is no decision that is perfect.
 
+> "The skill reads reference docs and ADRs. That's a lot of context. Are you willing to accept slower responses?"
+
+Yes, I care about completeness, not speed.
+
+> "What happens when the question is too vague?"
+
+Claude is quite smart, it should be able to figure it out.
+
+> "Someone uses this on a three-file hobby project. Should it still generate everything?"
+
+No. If you wrote three files, you don't need a skill to explain your own code.
+
+
 ## Not just for code
 
 I'm someone that also creates presentations and has difficult meetings and these kinds of things. Sometimes I need structured thinking for those too. So there's a conceptual track. The agent detects you're working on something non-technical and adjusts. Different questions, different stress points. Instead of an ADR and a plan, you get a record of the decisions you made.
 
-## Context engineering, not prompt engineering
+## Being smart about context
 
 Context windows are quite big. You can fit books in there. But LLMs are like humans. We have limited memory. If I asked you to store twenty numbers in your mind, you'd probably recall five or six. Same thing with LLMs. The more information, the more hallucinations and loss of information. So it's less about prompting and more about context engineering: what do you put in the context at every step so the agent has exactly what it needs and nothing more.
 
@@ -53,19 +62,12 @@ An **architect** that generates Mermaid diagrams for the ADR in parallel. Drawin
 
 The brainstorm phases run inside your conversation because I need to give input, see output, react. The sub-agents run in the background because they need to go outside. Go look something up, do it in parallel, don't give me the whole fifty pages. Give me a summary.
 
-## Smart about tokens
-
-I use a lot of tokens, but not as many as you'd think. The brainstorm itself uses the smartest model you can get. I use Opus. But for sub-agents, you use cheaper models. The researcher uses Haiku, five times cheaper, because it reads a lot of content. The teacher and architect use Sonnet.
-
-If you have a good plan, you can use cheaper models to implement it. But the plan needs to be really good. If I used Opus for implementation, my costs would be three times higher.
-
-There are workflows where people set up agents talking to agents and multiple code sessions and whatnots. That works for some teams. For me, I want to be in control of my decisions. I own the ADR, I own the code. I'm technical, so I can adjust the outputs. I don't need fifty sub-agents.
 
 ## A mentor, not autopilot
 
 I am the one that says let's go here, let's go there. It's different from vibe coding, where you describe what you want and hope the output is right. Here, every decision is already stress-tested before you write a single line of code.
 
-Of course it doesn't replace a really good senior engineer. I've had brainstorm sessions with colleagues at Data Minded who are way more senior than me. There is still a gap. But when you don't have that for the day to day, it catches things I would have found two days into implementation.
+Of course it doesn't replace a really good senior engineer. I've had brainstorm sessions with colleagues at Dataminded who are way more senior than me. There is still a gap. But when you don't have that for the day to day, it catches things I would have found two days into implementation.
 
 I actually use it with a colleague too. We treat Arete as a third person in our brainstorm. We sit down in the same room, discuss the problem, kick up the brainstorm, and then we both read the outputs, discuss our answers together.
 
