@@ -35,6 +35,12 @@ const morePosts = [prevPost, nextPost].filter(Boolean);
   <article class="article-page">
 
     <header class="article-header">
+      <h1 class="article-title">{post.data.title}</h1>
+
+      {post.data.description && (
+        <p class="article-subtitle">{post.data.description}</p>
+      )}
+
       <div class="article-meta">
         <time datetime={post.data.pubDate.toISOString()}>
           {formatDate(post.data.pubDate)}
@@ -50,22 +56,6 @@ const morePosts = [prevPost, nextPost].filter(Boolean);
           </>
         )}
       </div>
-
-      <h1 class="article-title">{post.data.title}</h1>
-
-      {post.data.description && (
-        <p class="article-subtitle">{post.data.description}</p>
-      )}
-
-      {post.data.tags?.length > 0 && (
-        <div class="article-tags">
-          {post.data.tags.map((tag: string) => (
-            <span class="article-tag">{tag}</span>
-          ))}
-        </div>
-      )}
-
-      <div class="article-header-accent" aria-hidden="true"></div>
     </header>
 
     {post.data.image && (
@@ -93,6 +83,13 @@ const morePosts = [prevPost, nextPost].filter(Boolean);
       <div class="article-content prose">
         <Content />
         <hr class="article-closing-rule" />
+        {post.data.tags?.length > 0 && (
+          <div class="article-tags article-tags--footer">
+            {post.data.tags.map((tag: string) => (
+              <span class="article-tag">{tag}</span>
+            ))}
+          </div>
+        )}
         <p class="article-closing">
           Thanks for reading! If you have any questions or feedback, find me on
           <a href="https://github.com/jesgarram" target="_blank" rel="noopener">GitHub</a> or
