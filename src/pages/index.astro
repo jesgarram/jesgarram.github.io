@@ -6,47 +6,22 @@ import { slug, formatDate } from '../lib/utils';
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-
-function monthKey(date: Date) {
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-}
-
-const grouped = posts.reduce<Record<string, typeof posts>>((acc, post) => {
-  const key = monthKey(post.data.pubDate);
-  (acc[key] ??= []).push(post);
-  return acc;
-}, {});
-
-const months = Object.keys(grouped);
 ---
 
 <Base title="Jesus Garcia">
-  <section class="index-section">
-    <h1 class="index-title">Index</h1>
+  <section class="page-section">
+    <h1 class="page-section-title page-section-title--index">Writing</h1>
+    <p class="index-intro">Talks, ideas, and the things I learn along the way.</p>
 
-    {months.map((month, i) => (
-      <div class="month-group">
-        <div class="month-block">
-          <h2 class="month-heading">{month}</h2>
-          <div class="month-posts">
-            {grouped[month].map((post) => (
-              <a href={`/blog/${slug(post.id)}/`} class="post-card">
-                <article>
-                  <h3 class="post-card-title">{post.data.title}</h3>
-                  {post.data.description && (
-                    <p class="post-card-description">{post.data.description}</p>
-                  )}
-                  <p class="post-card-meta">
-                    {formatDate(post.data.pubDate)}
-                    {post.data.tags?.length > 0 && ` — ${post.data.tags.join(', ')}`}
-                  </p>
-                </article>
-              </a>
-            ))}
-          </div>
-        </div>
-        {i < months.length - 1 && <hr class="month-divider" />}
-      </div>
-    ))}
+    <div class="post-list">
+      {posts.map((post) => (
+        <a href={`/blog/${slug(post.id)}/`} class="post-entry">
+          <h2 class="post-entry-title">{post.data.title}</h2>
+          <time class="post-entry-date" datetime={post.data.pubDate.toISOString()}>
+            {formatDate(post.data.pubDate)}
+          </time>
+        </a>
+      ))}
+    </div>
   </section>
 </Base>
