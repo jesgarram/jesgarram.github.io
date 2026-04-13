@@ -8,13 +8,13 @@ tags: ['GenAI', 'Engineering', 'Production']
 
 How many GenAI pilots actually make it? 5%. [MIT, 2025](https://fortune.com/2025/08/18/mit-report-95-percent-generative-ai-pilots-at-companies-failing-cfo/).
 
-I am not surprised.
+I am not surprised. I mean, you know how it goes. The demo works, leadership gets super excited, and suddenly they want it in production yesterday. With the same team. And the same POC you put together in two weeks.
 
-Most companies are trying to run before they can even walk. Or they are trying to use GenAI to solve problems that are either not worth solving or solvable with simpler solutions.
+Take [Klarna](https://www.bloomberg.com/news/articles/2025-05-08/klarna-turns-from-ai-to-real-person-customer-service). They reduced customer service staff and replaced them with agents. Soon after, they realized the quality was not there and started hiring people back. We have seen it everywhere lately: AI as a front to cut costs. But then... reality hits. Wrong reason, wrong result.
 
-Take [Klarna](https://www.bloomberg.com/news/articles/2025-05-08/klarna-turns-from-ai-to-real-person-customer-service). They reduced customer service staff and replaced them with agents. Soon after, they realized the quality was not there and started hiring people back. We have seen the same pattern everywhere lately: AI as a front to cut costs. But then... reality hits. Wrong reason, wrong result.
+So how do you make sure your GenAI solution actually makes it? What makes them fail?
 
-Almost a year ago I started building an agentic solution for knowledge retrieval at a large company (+6k employees). The things that actually kept us in the 5%? They are not fancy. At all.
+Almost a year ago I started building an agentic solution for knowledge retrieval at a large company (+6k employees). This is what I have learnt so far.
 
 ## What Does It Actually Take?
 
@@ -32,7 +32,7 @@ I am an engineer. So that's where I'll focus.
 
 When you open your LinkedIn, you think that building an agent is just plumbing: API here, MCP there, and pum! My first agentic solution. When you are in a large enterprise, that is not enough. Now you have to care about scale, security, user experience, all at once, for thousands of users with different profiles, expectations, and AI knowledge.
 
-But don't worry. These issues are what make building in production actually much more fun, at least for me. At the same time, the space is evolving so fast that it's overwhelming. You can build everything! Combine that with your latest AI coding tool and the possibilities are really endless: MCPs, Skills, sub-agents, self-learning agents...
+But don't worry. This is what makes building in production actually fun, at least for me. At the same time, the space is evolving so fast that it's overwhelming. You can build everything! Combine that with your latest AI coding tool and the possibilities are really endless: MCPs, Skills, sub-agents, self-learning agents...
 
 ![You-can-build-everything](./everything-to-build.png)
 *You can build Everything! Don't*
@@ -59,11 +59,11 @@ We built the custom tools using Skills + custom APIs, which allows us to plug an
 
 ## Building Things Right
 
-The majority of what I have learnt from taking a POC into production is not even GenAI related. That's the whole point of this article.
+Most of what I have learnt from taking a POC into production is not even GenAI related. That's the whole point of this article.
 
 ### Agentic AI Solutions Are Products
 
-Agentic AI solutions are products. They are not a one-off thing. They are not demos that you do to impress your boss and get a promotion. If your solution is good, it's going to be used by a lot of people. A lot.
+They are not a one-off thing. They are not demos that you do to impress your boss and get a promotion. If your solution is good, it's going to be used by a lot of people. A lot.
 
 ![The-dream](./agents-are-products.png)
 *Us the first week at the job vs now.*
@@ -76,7 +76,7 @@ So we had to sit down, make a proper plan, define the non-negotiables and bring 
 
 > Don't fly blind.
 
-It does not matter how tight the timeline or how high the expectations. The only thing that matters is whether you are building what your users actually need. And the only way to know that is to build it together with them.
+It does not matter how tight the timeline. What matters is whether you are building what your users actually need. And the only way to know that is to build it together with them.
 
 We have learnt so much from our users. About things that we thought were important, and were not at all. About things that were not in our roadmap and were a must.
 
@@ -91,7 +91,7 @@ I have been on both sides of the coin. In the POC we were like two chickens with
 ![The-boring-work](./the-boring-work.png)
 *The boring work is invisible, but keeps you afloat.*
 
-It took me and my team a couple of months building a good foundation before we could start playing with the fun stuff: private networking, JWT token validation, WAF protection, CI/CD, observability, scalability. None of that is GenAI. All of it is required.
+It took me and my team a couple of months building a good foundation before we could start playing with the fun stuff. Private networking, JWT token validation, WAF protection, CI/CD, observability, scalability. None of that is GenAI. All of it is required.
 
 Getting security right was the best example. The data is private IP, so the raw data cannot be publicly reachable on the Internet. We had to set up virtual networks, subnets, NSGs, an application gateway to allow the frontend to talk with the backend safely through the public internet. We have to handle proper role based access control, fine-grained permissions, entra IDs of the users, you name it.
 
@@ -106,7 +106,7 @@ I was a bit scared when I read that. Could that happen in the solution I had bee
 
 ### Don't Fall in Love With the Solution
 
-The space moves fast. What you built three months ago might not be the right answer anymore. The engineer's instinct is to fix what you have. Sometimes the right call is to let go and rebuild.
+The space moves fast. What you built three months ago might not be the right answer anymore. Your first instinct is to fix what you have. Sometimes the right call is to let go and rebuild.
 
 We went through this multiple times. Our first database was Cosmos DB. It worked for the POC, but when we did load testing, it could not handle what we needed. We tried to fix it by dropping hybrid search, but then the retrieval quality dropped. At some point we had to say, okay, this is not going to work, let's move to PostgreSQL.
 
@@ -132,24 +132,20 @@ I am writing this from the other side. Things worked out. But I would be lying i
 
 There were quite some moments along the way where it could have gone differently. A stakeholder losing patience. A pivot that took longer than expected. A demo that almost did not work. When you are in a high-priority project with a lot of visibility, small mistakes get amplified. The pressure is constant.
 
-What got us through it? Understanding that the gap between what engineers think matters and what users actually need is really the whole point. That's where the 95% fails. Not because the models are not good enough. Not because the tech is not there. But because shipping GenAI is not a tech problem. It's a product problem, an engineering problem, and a listening problem.
+What got us through it? Listening. The gap between what engineers think matters and what users actually need, that is where the 95% fails. Not because the models are not good enough. Not because the tech is not there. But because shipping GenAI is not a tech problem. It's a product problem, an engineering problem, and a listening problem.
+
+We are still at the beginning. There is a lot we have not figured out. Benchmarking is the big one. The questions our users ask are so specific that getting ground truth data is really, really difficult. We are about to ingest a lot more data and we know the orchestration is going to get more complex. And adoption? Convincing people to change how they work is harder than building the thing in the first place. There is a lot of internal marketing effort that nobody warns you about.
+
+But that is a problem for future us.
+
+## The Bottom Line
 
 If I had to distill a year of learnings into a few lines:
 
-- Is the problem worth solving? Answer that before you write a single line of code.
-- Buy what is not your core value. Build what makes you unique.
-- Build it with your users, not for them.
-- 80% of shipping GenAI is engineering. Do the boring work.
-- Don't fall in love with the solution. The ability to pivot is more valuable than getting it right the first time.
-- Context is king. If the data is not there, the magic is not there.
-
-We are still at the beginning. There is a lot we have not figured out.
-
-Benchmarking is the big one. We have tracing, we have the frameworks, but the questions our users ask are so specific that getting ground truth data is really, really difficult. We are experimenting with analyzing traces offline to see if users were actually happy with the responses, but we have not found our way yet.
-
-We are about to ingest a lot more data. We know the orchestration is going to get more complex. We don't know how that is going to play out.
-
-Adoption is another challenge. We are in MVP phase and people need to get used to these kind of systems. There is a lot of internal marketing effort that nobody warns you about. Convincing people to change how they work is harder than building the thing in the first place.
+- **Make sure the problem is worth solving.** Not "leadership wants AI" worth solving. Actually worth solving. We almost skipped this.
+- **Buy what is not your core value. Build what makes you unique.** Why would you build a frontend when there is one that works properly? But the orchestration, the tools, that is where we brought the value.
+- **Build with your users, not for them.** We only made it because we listened. Every time we thought we knew better, we were wrong.
+- **Do the boring work.** 80% of shipping GenAI is engineering. Networking, security, CI/CD, observability. None of it is fancy but all of it is required. And when things go wrong out there, it is the boring work that lets you sleep like a baby.
 
 The boring stuff is what keeps you in the 5%.
 
