@@ -14,21 +14,21 @@ Take [Klarna](https://www.bloomberg.com/news/articles/2025-05-08/klarna-turns-fr
 
 So how do you make sure your GenAI solution actually makes it? What makes them fail?
 
-Almost a year ago I started building an agentic solution for knowledge retrieval at a large company (+6k employees). This is what I have learnt so far.
+Almost a year ago I started building an internal copilot at a large company (+6k employees). It retrieves and reasons about internal knowledge, thousands of documents in all kinds of formats (PDFs, images, PowerPoints, tables), all of it private data that cannot leak. If you think it's simple, let me prove you wrong. I hope my learnings can save you some time in the future.
 
-## What Does It Actually Take?
+## It Starts Before the First Line of Code
 
-It starts before you write a single line of code.
+Before you build the fancy agent, you need to answer a few super boring questions.
 
 > Is the problem worth solving? Are agents the actual solution? Do you have solid foundations in place?
 
 Nobody wants to answer those. They want to skip straight to the fancy agent. But if you skip them, you are already in the 95%.
 
-Once you get those right, it's time for the engineering questions: What should we buy and what should we build? And how do we build things right?
+Once you get those right, it's time for the engineering work. Figuring out where you actually add value in the stack, and then making sure what you build can survive production.
 
 I am an engineer. So that's where I'll focus.
 
-## What Should You Buy and What Should You Build?
+## Build What Makes You Unique
 
 When you open your LinkedIn, you think that building an agent is just plumbing: API here, MCP there, and pum! My first agentic solution. When you are in a large enterprise, that is not enough. Now you have to care about scale, security, user experience, all at once, for thousands of users with different profiles, expectations, and AI knowledge.
 
@@ -37,31 +37,41 @@ But don't worry. This is what makes building in production actually fun, at leas
 ![You-can-build-everything](./everything-to-build.png)
 *You can build Everything! Don't*
 
-That's the first mistake to avoid. Please, breathe. Take a step back. Ask yourself: Who are my users? What do they really need? Then, start with the minimum viable and iterate.
+The first trap is thinking that because you *can* build everything, you *should* build everything.
+
+Please, breathe.
+
+Take a step back and ask: what is actually core here? What is the thing that makes our solution unique? What are we building because it gives us an edge, and what are we building just because engineers like building stuff?
 
 ![Something about being zen](./being-zen.png)
-*This is Dobby. Dobby is chill. Be more like Dobby before building stuff*
+*This is Dobby. Dobby is chill. Be more like Dobby before building stuff.*
 
-In our case, we were working in the Azure ecosystem. The thing is, when you are in a big organization, you already have a lot of tools at your disposal. We used the Copilot frontend with our own custom orchestration behind it. Why would we spend time and money building a frontend for LLMs when there is already one that works properly?
+In our case we were in the Azure ecosystem. We already had a frontend that worked properly. So we used the Copilot frontend and put our own orchestration behind it.
 
-> Buy the thing that is not your core value, build the thing that makes you unique.
+Why would we spend time building a custom frontend for LLMs if there is already one that works and users can adopt quite easily?
 
-And don't even think about training your own LLM. I mean, the organization is really big, you could think about it, but that's a lot of money to not get a good solution.
+So for me the rule is simple:
 
-We also thought about fine-tuning, but the thing is, you can have indirect knowledge leakage. Imagine a large enterprise where different teams work on confidential projects. If you fine-tune on all of that data, the LLM memorizes it, and suddenly someone from Team A can extract knowledge about Team B's work just by asking the right questions. So fine-tuning was out too.
+> Buy the thing that is not your core value. Build the thing that makes you unique.
 
-So where can you bring the value? If you think about the stack, you have the entrypoint, the orchestration, the LLM. The entrypoint? Buy it. The LLM? Buy it. But the orchestration and the tools? That's where you as an engineer can bring the most value.
+And no, I would not train my own LLM here. Of course you can think about it in a very large company. But that is a lot of money and a lot of complexity for something that is probably not where your differentiation is.
 
-We built the custom tools using Skills + custom APIs, which allows us to plug and play into different agents and be more future proof. And for the orchestration we went with Agno, which gives us full control over the workflow, the reasoning loop, the tool calling. That control matters. An agent is basically an LLM in a loop. If you don't own that loop, you can't tune how the agent reasons. That's the stuff that makes your solution unique.
+We also ruled out fine-tuning for our setting. The thing is, when you have different teams working on confidential things, you need to be super careful about indirect knowledge leakage. If the model starts memorizing things it should not expose across boundaries, you have a problem. A big one.
+
+So where do you build?
+
+For us, the value was in the loop.
+
+We built the custom tools using Skills + custom APIs, which allows us to plug and play into different agents and be more future proof. And for the orchestration we went with [Agno](https://github.com/agno-agi/agno), which gives us full control over the workflow, the reasoning loop, the tool calling. That control matters. An agent is basically an LLM in a loop. If you don't own that loop, you can't tune how the agent reasons. That's the stuff that makes your solution unique.
 
 ![Buy-vs-build](./build-vs-buy.png)
 *What we built vs what we bought.*
 
-## Building Things Right
+## Most of It Is Not Even GenAI
 
-Most of what I have learnt from taking a POC into production is not even GenAI related. That's the whole point of this article.
+Most of what I have learnt from taking a POC into production is not even GenAI. That's the whole point of this article.
 
-### Agentic AI Solutions Are Products
+### Your Agent Is a Product
 
 They are not a one-off thing. They are not demos that you do to impress your boss and get a promotion. If your solution is good, it's going to be used by a lot of people. A lot.
 
@@ -70,7 +80,7 @@ They are not a one-off thing. They are not demos that you do to impress your bos
 
 We started as a small POC team. We had two weeks to prove the system worked. If we didn't show value, the project was dead and the client was going with another company. We won that battle because we focused on making the retrieval accurate instead of going vanilla. The users said they would actually use it in their daily work. We won the buy versus build. Good.
 
-But then the hype kicked in. The news reached the board of directors, one of them used the system for a presentation and was quite happy. And suddenly management said, drop everything, deliver by January instead of March. They were like, how hard can it be? Just put 20,000 documents in. They didn't understand the difficulty. And we couldn't really explain it to them either.
+But then the hype kicked in. The news reached the board of directors, one of them used the system for a presentation and was quite happy. And suddenly management said, drop everything, deliver by January instead of March. They were like, how hard can it be? Just put 20,000 documents in. They didn't understand the difficulty. And we couldn't really explain it to them either. I am not sure we ever did. But the results started coming, and that is what built the trust.
 
 So we had to sit down, make a proper plan, define the non-negotiables and bring a structured message to leadership. If you want January, fine, but this is what we can deliver. Is it good enough?
 
@@ -104,17 +114,17 @@ But that happiness only lasts because you did the work upfront. Skip it, and you
 
 I was a bit scared when I read that. Could that happen in the solution I had been building this year? Then I remembered those couple of months of boring work. And I went back to sleep like a baby.
 
-### Don't Fall in Love With the Solution
+### Don't Fall in Love With Your First Solution
 
 The space moves fast. What you built three months ago might not be the right answer anymore. Your first instinct is to fix what you have. Sometimes the right call is to let go and rebuild.
 
 We went through this multiple times. Our first database was Cosmos DB. It worked for the POC, but when we did load testing, it could not handle what we needed. We tried to fix it by dropping hybrid search, but then the retrieval quality dropped. At some point we had to say, okay, this is not going to work, let's move to PostgreSQL.
 
-Same with the orchestration framework. We started with Microsoft's agent framework because we were in the Microsoft stack. It made sense. But as the solution grew, we realized it was not going to give us the control we needed. So we migrated the whole codebase to Agno. That was not a fun week.
+Same with the orchestration framework. We started with Microsoft's agent framework because we were in the Microsoft stack. It made sense. But as the solution grew, we realized it was not going to give us the control we needed. So we migrated the whole codebase to [Agno](https://github.com/agno-agi/agno). That was not a fun week.
 
 The thing is, you cannot get attached to your decisions. The sunk cost is real, the frustration is real, but if you hold on to something that is not working just because you already built it, you are slowing yourself down. In this space, the ability to pivot fast is more valuable than getting it right the first time.
 
-### Context Is King
+### No Data, No Magic
 
 The trivial one in hindsight. If you have not ingested the right data for your users, it does not matter how much agentic magic you throw at the problem. The insights are just not going to be there.
 
@@ -126,7 +136,7 @@ All of that worked quite well for the hard questions. Then, our users said:
 
 Why? Because a user asked who they should contact in the company for a question about X, and the system hallucinated the names. The response was good, the knowledge was there, but we hadn't ingested the HR data just yet. We thought it was not a priority.
 
-## The Other Side
+## What Got Us Through It
 
 I am writing this from the other side. Things worked out. But I would be lying if I said it was always clear that they would.
 
@@ -138,7 +148,7 @@ We are still at the beginning. There is a lot we have not figured out. Benchmark
 
 But that is a problem for future us.
 
-## The Bottom Line
+## What I Would Tell You on Day One
 
 If I had to distill a year of learnings into a few lines:
 
@@ -148,5 +158,7 @@ If I had to distill a year of learnings into a few lines:
 - **Do the boring work.** 80% of shipping GenAI is engineering. Networking, security, CI/CD, observability. None of it is fancy but all of it is required. And when things go wrong out there, it is the boring work that lets you sleep like a baby.
 
 The boring stuff is what keeps you in the 5%.
+
+*Originally published on [Medium](https://medium.com/datamindedbe/the-boring-stuff-that-keeps-you-in-the-5-55fa600ea512).*
 
 PS: Thanks to the great Jonny Daenen for the inspiration for the drawings.
